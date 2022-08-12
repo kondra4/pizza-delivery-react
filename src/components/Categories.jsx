@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
+import { useSearchParams } from "react-router-dom";
 
-const Categories = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
+const Categories = ({ searchParams, setSearchParams }) => {
+  // const [categoryParams, setCategoryParams] = useSearchParams();
+
+  const chooseCategory = searchParams.get("category");
+  console.log(chooseCategory);
 
   const categories = [
     "Все",
@@ -13,7 +17,7 @@ const Categories = () => {
   ];
 
   const onClickCategory = (index) => {
-    setActiveIndex(index);
+    setSearchParams({ category: index, sort: searchParams.get("sort") });
   };
 
   return (
@@ -24,7 +28,7 @@ const Categories = () => {
             <li
               key={i}
               onClick={() => onClickCategory(i)}
-              className={activeIndex === i ? "active" : ""}
+              className={chooseCategory == i ? "active" : ""}
             >
               {value}
             </li>

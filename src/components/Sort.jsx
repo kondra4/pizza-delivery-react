@@ -1,13 +1,22 @@
 import React, { useState } from "react";
 
-const Sort = () => {
+const Sort = ({ searchParams, setSearchParams }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [selected, setSelected] = useState(0);
-  const list = ["популярности", "цене", "алфавиту"];
-  const sortName = list[selected];
+  // const [selected, setSelected] = useSearchParams({ sort: 0 });
+  const chooseSort = 0;
+  // console.log(chooseSort);
+  const list = [
+    { name: "популярности", sortProperty: "rating" },
+    { name: "цене", sortProperty: "price" },
+    { name: "алфавиту", sortProperty: "title" },
+  ];
+  const sortName = list[chooseSort].name;
 
-  const onClickListItem = (i) => {
-    setSelected(i);
+  const onClickListItem = (sortProperty) => {
+    setSearchParams({
+      category: searchParams.get("category"),
+      sort: sortProperty,
+    });
     setIsVisible(false);
   };
 
@@ -34,14 +43,14 @@ const Sort = () => {
           <div className="sort__popup">
             <ul>
               {" "}
-              {list.map((name, i) => {
+              {list.map((obj, i) => {
                 return (
                   <li
                     key={i}
-                    onClick={() => onClickListItem(i)}
-                    className={selected === i ? "active" : ""}
+                    onClick={() => onClickListItem(obj.sortProperty)}
+                    className={chooseSort === i ? "active" : ""}
                   >
-                    {name}
+                    {obj.name}
                   </li>
                 );
               })}
