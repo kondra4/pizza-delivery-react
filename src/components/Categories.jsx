@@ -2,10 +2,7 @@ import React from "react";
 import { useSearchParams } from "react-router-dom";
 
 const Categories = ({ searchParams, setSearchParams }) => {
-  // const [categoryParams, setCategoryParams] = useSearchParams();
-
   const chooseCategory = searchParams.get("category");
-  console.log(chooseCategory);
 
   const categories = [
     "Все",

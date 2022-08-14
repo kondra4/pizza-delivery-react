@@ -1,27 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Categories from "../components/Categories";
 import Sort from "../components/Sort";
 import PizzaBlock from "../components/PizzaBlock";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import { useSearchParams } from "react-router-dom";
+import { SearchContext } from "../context/SearchContext";
+import ReactPaginate from "react-paginate";
+import Pagination from "../components/Pagination";
 
 const Home = () => {
   const [items, setItems] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { searchTitle } = useContext(SearchContext);
 
-  console.log("cat", searchParams.get("category"));
-  console.log("sort", searchParams.get("sort"));
+  const [searchParams, setSearchParams] = useSearchParams({
+    category: "",
+    sort: "",
+  });
+
+  const order = searchParams.get("sort").includes("-") ? "" : "order=desk";
+  const sortBy = searchParams.get("sort").replace("-", "");
+  const category =
+    searchParams.get("category") > 0
+      ? `category=${searchParams.get("category")}`
+      : "";
+  const search = searchTitle ? `&search=${searchTitle}` : "";
 
   useEffect(() => {
     setIsLoading(false);
     fetch(
-      searchParams.get("category") != 0
-        ? "https://62cd731a066bd2b699261b2e.mockapi.io/items?category=" +
-            searchParams.get("category")
-        : "https://62cd731a066bd2b699261b2e.mockapi.io/items"
+      `https://62cd731a066bd2b699261b2e.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}${order}${search}`
     )
       .then((res) => res.json())
       .then((json) => {
@@ -29,7 +40,7 @@ const Home = () => {
         setIsLoading(true);
       });
     window.scrollTo(0, 0);
-  }, [searchParams]);
+  }, [searchParams, searchTitle, currentPage]);
 
   return (
     <div className="container">
@@ -46,6 +57,7 @@ const Home = () => {
           ? items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)
           : [...new Array(6)].map((_, index) => <Skeleton key={index} />)}
       </div>
+      <Pagination onChangePage={(number) => setCurrentPage(number)} />
     </div>
   );
 };

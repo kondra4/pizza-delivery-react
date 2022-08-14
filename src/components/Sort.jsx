@@ -2,20 +2,24 @@ import React, { useState } from "react";
 
 const Sort = ({ searchParams, setSearchParams }) => {
   const [isVisible, setIsVisible] = useState(false);
-  // const [selected, setSelected] = useSearchParams({ sort: 0 });
-  const chooseSort = 0;
-  // console.log(chooseSort);
-  const list = [
-    { name: "популярности", sortProperty: "rating" },
-    { name: "цене", sortProperty: "price" },
-    { name: "алфавиту", sortProperty: "title" },
-  ];
-  const sortName = list[chooseSort].name;
 
-  const onClickListItem = (sortProperty) => {
+  const list = [
+    { name: "популярности(DESK)", sortProperty: "rating" },
+    { name: "популярности(ASK)", sortProperty: "-rating" },
+    { name: "цене(DESK)", sortProperty: "price" },
+    { name: "цене(ASK)", sortProperty: "-price" },
+    { name: "алфавиту(DESK)", sortProperty: "title" },
+    { name: "алфавиту(ASK)", sortProperty: "-title" },
+  ];
+
+  const chooseSort =
+    list.filter((obj) => obj.sortProperty === searchParams.get("sort"))[0] ||
+    list[0];
+
+  const onClickListItem = (obj) => {
     setSearchParams({
       category: searchParams.get("category"),
-      sort: sortProperty,
+      sort: obj.sortProperty,
     });
     setIsVisible(false);
   };
@@ -36,7 +40,7 @@ const Sort = ({ searchParams, setSearchParams }) => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setIsVisible(!isVisible)}>{sortName}</span>
+        <span onClick={() => setIsVisible(!isVisible)}>{chooseSort.name}</span>
       </div>
       <div>
         {isVisible && (
@@ -47,8 +51,8 @@ const Sort = ({ searchParams, setSearchParams }) => {
                 return (
                   <li
                     key={i}
-                    onClick={() => onClickListItem(obj.sortProperty)}
-                    className={chooseSort === i ? "active" : ""}
+                    onClick={() => onClickListItem(obj)}
+                    className={searchParams.get("sort") === i ? "active" : ""}
                   >
                     {obj.name}
                   </li>
